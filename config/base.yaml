@@ -1,0 +1,36 @@
+
+data_path: '~/Projects/low-order-climate/data/'
+
+ode_rhs:
+  _partial_: True
+  _target_: src.testbed_models.L86_gcm
+
+model:
+  _partial_: True
+  _target_: src.testbed_models.model_vectorized
+  ode_rhs: ${ode_rhs}
+
+model_solver:
+  _partial_: True
+  _target_: src.ode_solvers.rk4_solver
+  rhs_function: ${model}
+  time_step: 5e-3
+  
+experiment:
+  _target_: src.experiment.run_experiment
+  run_type: 'reach-attractor'  # 'reach-attractor',
+  epsilon: 0.1
+  name: 'L86_gcm_trajectory'
+  description: 'Trajectory for L86 GCM model'
+  model: ${model}
+  solver: ${model_solver}
+  T_start: 0
+  T_stop: 50.0
+  dt: 1e-2
+  model_dim: 5
+  dt_solver: 5e-3
+  initial_conditions_path: 'Initial_condition_on_att_L86_gcm.npy'
+  num_initials: 1
+
+
+
